@@ -13,6 +13,8 @@ add_executable(${PROJECT_NAME}
      src/lve_window.cpp
      src/lve_pipeline.hpp
      src/lve_pipeline.cpp
+     src/lve_device.hpp
+     src/lve_device.cpp
      src/app.hpp
      src/app.cpp
 )

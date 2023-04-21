@@ -18,6 +18,8 @@ namespace lve
 
         bool ShouldClose();
 
+        void CreateWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
+
     private:
         void initWindow();
         const int _width;
