@@ -38,12 +38,6 @@ namespace lve
         configInfo.Scissor.offset = {0, 0};
         configInfo.Scissor.extent = {width, height};
 
-        configInfo.ViewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-        configInfo.ViewportInfo.viewportCount = 1;
-        configInfo.ViewportInfo.pViewports = &configInfo.Viewport;
-        configInfo.ViewportInfo.scissorCount = 1;
-        configInfo.ViewportInfo.pScissors = &configInfo.Scissor;
-
         configInfo.RasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
         configInfo.RasterizationInfo.depthClampEnable = VK_FALSE;
         configInfo.RasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
@@ -153,13 +147,20 @@ namespace lve
         vertexInputInfo.pVertexAttributeDescriptions = nullptr;
         vertexInputInfo.pVertexBindingDescriptions = nullptr;
 
+        auto viewportInfo = VkPipelineViewportStateCreateInfo{};
+        viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+        viewportInfo.viewportCount = 1;
+        viewportInfo.pViewports = &configInfo.Viewport;
+        viewportInfo.scissorCount = 1;
+        viewportInfo.pScissors = &configInfo.Scissor;
+
         auto pipelineInfo = VkGraphicsPipelineCreateInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
         pipelineInfo.stageCount = 2;
         pipelineInfo.pStages = shaderStages;
         pipelineInfo.pVertexInputState = &vertexInputInfo;
         pipelineInfo.pInputAssemblyState = &configInfo.InputAssemblyInfo;
-        pipelineInfo.pViewportState = &configInfo.ViewportInfo;
+        pipelineInfo.pViewportState = &viewportInfo;
         pipelineInfo.pRasterizationState = &configInfo.RasterizationInfo;
         pipelineInfo.pMultisampleState = &configInfo.MultisampleInfo;
         pipelineInfo.pColorBlendState = &configInfo.ColorBlendInfo;

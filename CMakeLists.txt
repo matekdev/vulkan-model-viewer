@@ -15,6 +15,8 @@ add_executable(${PROJECT_NAME}
      src/lve_pipeline.cpp
      src/lve_device.hpp
      src/lve_device.cpp
+     src/lve_swap_chain.hpp
+     src/lve_swap_chain.cpp
      src/app.hpp
      src/app.cpp
 )

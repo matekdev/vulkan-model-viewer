@@ -11,7 +11,6 @@ namespace lve
     {
         VkViewport Viewport;
         VkRect2D Scissor;
-        VkPipelineViewportStateCreateInfo ViewportInfo;
         VkPipelineInputAssemblyStateCreateInfo InputAssemblyInfo;
         VkPipelineRasterizationStateCreateInfo RasterizationInfo;
         VkPipelineMultisampleStateCreateInfo MultisampleInfo;

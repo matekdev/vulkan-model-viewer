@@ -20,6 +20,11 @@ namespace lve
         return glfwWindowShouldClose(_window);
     }
 
+    VkExtent2D LveWindow::GetExtent()
+    {
+        return {static_cast<uint32_t>(_width), static_cast<uint32_t>(_height)};
+    }
+
     void LveWindow::CreateWindowSurface(VkInstance instance, VkSurfaceKHR *surface)
     {
         if (glfwCreateWindowSurface(instance, _window, nullptr, surface) != VK_SUCCESS)
