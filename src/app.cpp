@@ -3,8 +3,18 @@
 #include <stdexcept>
 #include <array>
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
 namespace lve
 {
+    struct SimplePushConstantData
+    {
+        glm::vec2 Offset;
+        alignas(16) glm::vec3 Color;
+    };
+
     App::App()
     {
         loadModels();
@@ -42,12 +52,17 @@ namespace lve
 
     void App::createPipelineLayout()
     {
+        auto pushConstantRange = VkPushConstantRange{};
+        pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+        pushConstantRange.offset = 0;
+        pushConstantRange.size = sizeof(SimplePushConstantData);
+
         auto pipelineLayoutInfo = VkPipelineLayoutCreateInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = 0;
         pipelineLayoutInfo.pSetLayouts = nullptr;
-        pipelineLayoutInfo.pushConstantRangeCount = 0;
-        pipelineLayoutInfo.pPushConstantRanges = nullptr;
+        pipelineLayoutInfo.pushConstantRangeCount = 1;
+        pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
         if (vkCreatePipelineLayout(_lveDevice.device(), &pipelineLayoutInfo, nullptr, &_pipelineLayout) != VK_SUCCESS)
         {
@@ -119,6 +134,9 @@ namespace lve
 
     void App::recordCommandBuffer(int imageIndex)
     {
+        static int frame = 0;
+        frame = (frame + 1) % 500;
+
         auto beginInfo = VkCommandBufferBeginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -136,7 +154,7 @@ namespace lve
         renderPassInfo.renderArea.extent = _lveSwapChain->getSwapChainExtent();
 
         auto clearValues = std::array<VkClearValue, 2>{};
-        clearValues[0].color = {0.1f, 0.1f, 0.1f, 1.0f};
+        clearValues[0].color = {0.01f, 0.01f, 0.01f, 1.0f};
         clearValues[1].depthStencil = {1.0f, 0};
 
         renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
@@ -157,7 +175,22 @@ namespace lve
 
         _lvePipeline->Bind(_commandBuffers[imageIndex]);
         _lveModel->Bind(_commandBuffers[imageIndex]);
-        _lveModel->Draw(_commandBuffers[imageIndex]);
+
+        for (int i = 0; i < 4; ++i)
+        {
+            auto push = SimplePushConstantData{};
+            push.Offset = {-0.5f + frame * 0.02f, -0.4f + i * 0.25f};
+            push.Color = {0.0f, 0.0f, 0.2f + 0.2f * i};
+
+            vkCmdPushConstants(
+                _commandBuffers[imageIndex],
+                _pipelineLayout,
+                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(SimplePushConstantData), &push);
+
+            _lveModel->Draw(_commandBuffers[imageIndex]);
+        }
 
         vkCmdEndRenderPass(_commandBuffers[imageIndex]);
 
