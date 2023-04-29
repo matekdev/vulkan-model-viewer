@@ -26,20 +26,24 @@ foreach(SHADER_FILE IN LISTS SHADER_FILES)
 endforeach()
 
 add_executable(${PROJECT_NAME} 
-     src/main.cpp
-     src/lve_window.hpp
-     src/lve_window.cpp
-     src/lve_pipeline.hpp
-     src/lve_pipeline.cpp
-     src/lve_device.hpp
-     src/lve_device.cpp
-     src/lve_swap_chain.hpp
-     src/lve_swap_chain.cpp
-     src/lve_model.hpp
-     src/lve_model.cpp
-     src/lve_object.hpp
-     src/app.hpp
-     src/app.cpp
+    src/main.cpp
+    src/lve_window.hpp
+    src/lve_window.cpp
+    src/lve_pipeline.hpp
+    src/lve_pipeline.cpp
+    src/lve_device.hpp
+    src/lve_device.cpp
+    src/lve_swap_chain.hpp
+    src/lve_swap_chain.cpp
+    src/lve_model.hpp
+    src/lve_model.cpp
+    src/lve_object.hpp
+    src/lve_renderer.hpp
+    src/lve_renderer.cpp
+    src/simple_render_system.hpp
+    src/simple_render_system.cpp
+    src/app.hpp
+    src/app.cpp
 )
 
 add_dependencies(${PROJECT_NAME} compile_shaders)
