@@ -4,7 +4,7 @@
 #include "lve_pipeline.hpp"
 #include "lve_device.hpp"
 #include "lve_swap_chain.hpp"
-#include "lve_model.hpp"
+#include "lve_object.hpp"
 
 #include <memory>
 #include <vector>
@@ -26,7 +26,7 @@ namespace lve
         void Run();
 
     private:
-        void loadModels();
+        void loadObjects();
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffers();
@@ -34,6 +34,7 @@ namespace lve
         void drawFrame();
         void recreateSwapChain();
         void recordCommandBuffer(int imageIndex);
+        void renderObjects(VkCommandBuffer commandBuffer);
 
         LveWindow _lveWindow{WIDTH, HEIGHT, "Vulkan Model Viewer"};
         LveDevice _lveDevice{_lveWindow};
@@ -41,6 +42,6 @@ namespace lve
         std::unique_ptr<LvePipeline> _lvePipeline;
         VkPipelineLayout _pipelineLayout;
         std::vector<VkCommandBuffer> _commandBuffers;
-        std::unique_ptr<LveModel> _lveModel;
+        std::vector<LveObject> _objects;
     };
 }

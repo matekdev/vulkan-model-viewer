@@ -37,6 +37,7 @@ add_executable(${PROJECT_NAME}
      src/lve_swap_chain.cpp
      src/lve_model.hpp
      src/lve_model.cpp
+     src/lve_object.hpp
      src/app.hpp
      src/app.cpp
 )

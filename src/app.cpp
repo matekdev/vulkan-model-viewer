@@ -6,18 +6,20 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 
 namespace lve
 {
     struct SimplePushConstantData
     {
+        glm::mat2 trasnform{1.f};
         glm::vec2 Offset;
         alignas(16) glm::vec3 Color;
     };
 
     App::App()
     {
-        loadModels();
+        loadObjects();
         createPipelineLayout();
         recreateSwapChain();
         createCommandBuffers();
@@ -39,7 +41,7 @@ namespace lve
         vkDeviceWaitIdle(_lveDevice.device());
     }
 
-    void App::loadModels()
+    void App::loadObjects()
     {
         std::vector<LveModel::Vertex> vertices{
             {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
@@ -47,7 +49,16 @@ namespace lve
             {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
         };
 
-        _lveModel = std::make_unique<LveModel>(_lveDevice, vertices);
+        auto lveModel = std::make_shared<LveModel>(_lveDevice, vertices);
+
+        auto triangle = LveObject::CreateObject();
+        triangle.model = lveModel;
+        triangle.color = {.1f, .8f, .1f};
+        triangle.transform2d.Translation.x = .2f;
+        triangle.transform2d.scale = {2.f, .5f};
+        triangle.transform2d.rotation = .25f * glm::two_pi<float>();
+
+        _objects.push_back(std::move(triangle));
     }
 
     void App::createPipelineLayout()
@@ -134,9 +145,6 @@ namespace lve
 
     void App::recordCommandBuffer(int imageIndex)
     {
-        static int frame = 0;
-        frame = (frame + 1) % 500;
-
         auto beginInfo = VkCommandBufferBeginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -173,30 +181,38 @@ namespace lve
         vkCmdSetViewport(_commandBuffers[imageIndex], 0, 1, &viewport);
         vkCmdSetScissor(_commandBuffers[imageIndex], 0, 1, &scissor);
 
-        _lvePipeline->Bind(_commandBuffers[imageIndex]);
-        _lveModel->Bind(_commandBuffers[imageIndex]);
-
-        for (int i = 0; i < 4; ++i)
-        {
-            auto push = SimplePushConstantData{};
-            push.Offset = {-0.5f + frame * 0.02f, -0.4f + i * 0.25f};
-            push.Color = {0.0f, 0.0f, 0.2f + 0.2f * i};
-
-            vkCmdPushConstants(
-                _commandBuffers[imageIndex],
-                _pipelineLayout,
-                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-                0,
-                sizeof(SimplePushConstantData), &push);
-
-            _lveModel->Draw(_commandBuffers[imageIndex]);
-        }
+        renderObjects(_commandBuffers[imageIndex]);
 
         vkCmdEndRenderPass(_commandBuffers[imageIndex]);
 
         if (vkEndCommandBuffer(_commandBuffers[imageIndex]) != VK_SUCCESS)
         {
             throw std::runtime_error("Failed to record command buffer.");
+        }
+    }
+
+    void App::renderObjects(VkCommandBuffer commandBuffer)
+    {
+        _lvePipeline->Bind(commandBuffer);
+
+        for (auto &obj : _objects)
+        {
+            obj.transform2d.rotation = glm::mod(obj.transform2d.rotation + 0.01f, glm::two_pi<float>());
+
+            auto push = SimplePushConstantData{};
+            push.Offset = obj.transform2d.Translation;
+            push.Color = obj.color;
+            push.trasnform = obj.transform2d.Mat2();
+
+            vkCmdPushConstants(
+                commandBuffer,
+                _pipelineLayout,
+                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(SimplePushConstantData), &push);
+
+            obj.model->Bind(commandBuffer);
+            obj.model->Draw(commandBuffer);
         }
     }
 
