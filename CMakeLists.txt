@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.16)
 project(vulkan-model-viewer)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -51,5 +50,8 @@ add_executable(${PROJECT_NAME}
 )
 
 add_dependencies(${PROJECT_NAME} compile_shaders)
+
+target_include_directories(${PROJECT_NAME} PRIVATE lib)
+target_sources(${PROJECT_NAME} PRIVATE lib/tiny_obj_loader.h)
 
 target_link_libraries(${PROJECT_NAME} glfw ${GLFW_LIBRARIES} Vulkan::Vulkan ${GLM_LIBRARIES} glm::glm)
