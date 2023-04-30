@@ -1,6 +1,6 @@
 # Vulkan Model Viewer
 
-A model viewer that supports a basic game loop with camera controls. Built with Vulkan and uses GLFW for windowing and GLM for vector math.
+A model viewer that supports a basic game loop with camera controls. Built with Vulkan and uses GLFW for windowing, GLM for vector math, and tinyobjloader for loading `.obj` files.
 
 # Controls
 **WASD** - Horizontal movement
@@ -27,4 +27,5 @@ Run the resulting executable.
 # Resources
 - [GLFW](https://github.com/glfw/glfw)
 - [GLM](https://github.com/g-truc/glm)
+- [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 - [Brendan Galea YouTube Series](https://www.youtube.com/@BrendanGalea)
