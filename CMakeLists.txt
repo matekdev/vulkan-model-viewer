@@ -40,6 +40,8 @@ add_executable(${PROJECT_NAME}
     src/lve_object.hpp
     src/lve_renderer.hpp
     src/lve_renderer.cpp
+    src/lve_camera.hpp
+    src/lve_camera.cpp
     src/simple_render_system.hpp
     src/simple_render_system.cpp
     src/app.hpp

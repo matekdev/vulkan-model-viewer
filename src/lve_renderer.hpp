@@ -20,6 +20,7 @@ namespace lve
         LveRenderer &operator=(const LveRenderer &) = delete;
 
         VkRenderPass GetSwapChainRenderPass() const { return _lveSwapChain->getRenderPass(); }
+        float GetAspectRatio() const { return _lveSwapChain->extentAspectRatio(); }
         bool IsFrameInProgress() const { return _isFrameStarted; }
 
         VkCommandBuffer GetCurrentCommandBuffer() const
