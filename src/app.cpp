@@ -24,6 +24,7 @@ namespace lve
     {
         auto simpleRenderSystem = SimpleRenderSystem{_lveDevice, _lveRenderer.GetSwapChainRenderPass()};
         auto camera = LveCamera{};
+        camera.SetViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
 
         while (!_lveWindow.ShouldClose())
         {
