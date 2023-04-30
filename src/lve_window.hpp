@@ -16,6 +16,7 @@ namespace lve
         LveWindow(const LveWindow &) = delete;
         LveWindow &operator=(const LveWindow &) = delete;
 
+        GLFWwindow *GetGLFWWindow() const { return _window; }
         bool ShouldClose();
         VkExtent2D GetExtent();
         bool WasWindowResized();

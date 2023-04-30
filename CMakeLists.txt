@@ -44,6 +44,8 @@ add_executable(${PROJECT_NAME}
     src/lve_camera.cpp
     src/simple_render_system.hpp
     src/simple_render_system.cpp
+    src/keyboard_movement_controller.cpp
+    src/keyboard_movement_controller.hpp
     src/app.hpp
     src/app.cpp
 )
