@@ -9,7 +9,7 @@ A model viewer that supports a basic game loop with camera controls. Built with 
 
 **Arrow keys** - Rotate camera
 
-# Example
+# Screenshots
 ![rabbit](imgs/rabbit.png "rabbit")
 ![cube example](imgs/cube.png "cube example")
 
